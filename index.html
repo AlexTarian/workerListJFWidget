@@ -136,66 +136,64 @@
   <div class="widget">
     <h2>Add Workers</h2>
 
-    <div class="grid">
-      <div class="small-row">
-        <div>
-          <label for="firstName">First Name<span style="color:red;">*</span></label>
-          <input id="firstName" type="text" />
-        </div>
-
-        <div>
-          <label for="midName">Middle Name</label>
-          <input id="midName" type="text" />
-        </div>
+    <div class="small-row">
+      <div>
+        <label for="firstName">First Name<span style="color:red;">*</span></label>
+        <input id="firstName" type="text" />
+      </div>
         
-        <div>
-          <label for="lastName">Last Name*</label>
-          <input id="lastName" type="text" />
-        </div>
-      </div>  
-
-      <div class="small-row">
-        <div>
-          <label for="status">Country of Origin</label>
-          <select id="status">
-            <option value="H-2A">H-2A</option>
-            <option value="H-4">H-4</option>
-          </select>
-        </div>
+      <div>
+        <label for="midName">Middle Name</label>
+        <input id="midName" type="text" />
+      </div>
         
-        <div>
-          <label for="country">Country of Origin</label>
-          <select id="country">
-            <option value="">Select country</option>
-            <option value="Mexico">Mexico</option>
-            <option value="South Africa">South Africa</option>
-            <option value="Jamaica">Jamaica</option>
-            <option value="Guatemala">Guatemala</option>
-            <option value="Honduras">Honduras</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <label class="checkbox-row">
-          <input id="returningWorker" type="checkbox" />
-          Returning Worker
-        </label>
+      <div>
+        <label for="lastName">Last Name<span style="color:red;">*</span></label>
+        <input id="lastName" type="text" />
       </div>
     </div>
 
     <div class="small-row">
       <div>
-        <label for="phone">Phone</label>
+        <label for="status">Status<span style="color:red;">*</span></label>
+        <select id="status">
+          <option value="H-2A">H-2A</option>
+          <option value="H-4">H-4</option>
+        </select>
+      </div>
+        
+      <div>
+        <label for="country">Country of Origin<span style="color:red;">*</span></label>
+        <select id="country">
+          <option value="">Select country</option>
+          <option value="Mexico">Mexico</option>
+          <option value="South Africa">South Africa</option>
+          <option value="Jamaica">Jamaica</option>
+          <option value="Guatemala">Guatemala</option>
+          <option value="Honduras">Honduras</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+ 
+      <label class="checkbox-row">
+      <input id="returningWorker" type="checkbox" />
+        Returning Worker
+      </label>
+    </div>
+
+    <div class="small-row">
+      <div>
+        <label for="phone">Phone<span style="color:red;">*</span></label>
         <input id="phone" type="tel" placeholder="+1..." />
       </div>
 
       <div>
-        <label for="email">Email</label>
+        <label for="email">Email<span style="color:red;">*</span></label>
         <input id="email" type="email" />
       </div>
 
       <div>
-        <label for="arrivalDate">Est. Arrival</label>
+        <label for="arrivalDate">Est. Arrival<span style="color:red;">*</span></label>
         <input id="arrivalDate" type="date" />
       </div>
     </div>
