@@ -184,7 +184,7 @@
 
     <div class="small-row">
       <div>
-        <label for="phone">Phone<span style="color:red;">*</span></label>
+        <label for="phone">Phone (w/ Country Code)<span style="color:red;">*</span></label>
         <input id="phone" type="tel" placeholder="+1..." />
       </div>
 
@@ -201,7 +201,7 @@
 
     <div class="small-row">
       <button id="addWorkerBtn" type="button">+ ADD</button>
-
+      <div><span id="workerCount">0</span><span>/</span><span id="workerTotal">0</span><span> workers selected</span></div>
       <div id="error" class="error"></div>
     </div>
 
@@ -236,6 +236,7 @@
 
     const fields = {
       firstName: document.getElementById("firstName"),
+      midName: document.getElementById("midName"),
       lastName: document.getElementById("lastName"),
       status: document.getElementById("status"),
       country: document.getElementById("country"),
@@ -243,11 +244,18 @@
       phone: document.getElementById("phone"),
       email: document.getElementById("email"),
       arrivalDate: document.getElementById("arrivalDate"),
+      workerCount: document.getElementById("workerCount"),
+      workerTotal: document.getElementById("workerTotal"),
       error: document.getElementById("error"),
       workerList: document.getElementById("workerList")
     };
 
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
+
+    function updateWorkerCountDisplay() {
+      fields.workerCount.textContent = workers.length;
+      fields.workerTotal.textContent = REQUIRED_WORKERS;
+    }
 
     function addWorker() {
     if (workers.length >= REQUIRED_WORKERS) {
@@ -257,7 +265,9 @@
     }
       const worker = {
         firstName: fields.firstName.value.trim(),
+        midName: fields.midName.value.trim(),
         lastName: fields.lastName.value.trim(),
+        status: fields.status.value.trim(),
         country: fields.country.value,
         returningWorker: fields.returningWorker.checked,
         phone: fields.phone.value.trim(),
@@ -265,8 +275,16 @@
         estimatedArrival: fields.arrivalDate.value
       };
 
-      if (!worker.firstName || !worker.lastName || !worker.country) {
-        fields.error.textContent = "First name, last name, and country are required.";
+      if (
+        !worker.firstName ||
+        !worker.lastName ||
+        !worker.status ||
+        !worker.country ||
+        !worker.phone ||
+        !worker.email ||
+        !worker.estimatedArrival
+      ) {
+        fields.error.textContent = "Please complete all required fields before adding the worker.";
         return;
       }
 
@@ -275,16 +293,20 @@
 
       clearForm();
       renderWorkers();
+      updateWorkerCountDisplay();
     }
 
     function deleteWorker(index) {
       workers.splice(index, 1);
       renderWorkers();
+      updateWorkerCountDisplay();
     }
 
     function clearForm() {
       fields.firstName.value = "";
+      fields.midName.value = "";
       fields.lastName.value = "";
+      fields.status.value = "";
       fields.country.value = "";
       fields.returningWorker.checked = false;
       fields.phone.value = "";
@@ -333,9 +355,11 @@
 
     JFCustomWidget.subscribe("ready", function () {
       REQUIRED_WORKERS = getRequiredWorkerCount();
+      updateWorkerCountDisplay();
 
       JFCustomWidget.subscribe("submit", function () {
         REQUIRED_WORKERS = getRequiredWorkerCount();
+        updateWorkerCountDisplay();
 
         const workerCount = workers.length;
 
