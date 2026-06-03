@@ -217,6 +217,7 @@
     <div id="workerList" class="worker-list"></div>
   </div>
 
+  <script src="countries.js"></script>
   <script>
     const workers = [];
     let REQUIRED_WORKERS = 1;
@@ -243,6 +244,18 @@
       }
     }
 
+    function populateCountryDropdown() {
+      fields.country.innerHTML = `<option value="">Select country</option>`;
+
+      COUNTRIES.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country.name;
+        option.textContent = country.name;
+        option.dataset.phoneCode = country.phoneCode;
+        fields.country.appendChild(option);
+      });
+    }
+
     const fields = {
       firstName: document.getElementById("firstName"),
       midName: document.getElementById("midName"),
@@ -262,6 +275,15 @@
 
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
     document.getElementById("status").addEventListener("change", toggleWorker);
+    
+    fields.country.addEventListener("change", function () {
+      const selectedOption = fields.country.selectedOptions[0];
+      const phoneCode = selectedOption?.dataset.phoneCode;
+
+      if (phoneCode && !fields.phone.value.trim()) {
+        fields.phone.value = phoneCode + " ";
+      }
+    });
 
     function getH2ACount() {
       return workers.filter(worker => worker.status === "H-2A").length;
@@ -389,6 +411,7 @@
     JFCustomWidget.subscribe("ready", function () {
       REQUIRED_WORKERS = getRequiredWorkerCount();
       updateWorkerCountDisplay();
+      populateCountryDropdown();
 
       JFCustomWidget.subscribe("submit", function () {
         REQUIRED_WORKERS = getRequiredWorkerCount();
