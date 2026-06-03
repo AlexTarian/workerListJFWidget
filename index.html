@@ -256,8 +256,16 @@
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
     document.getElementById("status").addEventListener("change", toggleWorker);
 
+    function getH2ACount() {
+      return workers.filter(worker => worker.status === "H-2A").length;
+    }
+
+    function getH4Count() {
+      return workers.filter(worker => worker.status === "H-4").length;
+    }
+    
     function updateWorkerCountDisplay() {
-      fields.workerCount.textContent = workers.length;
+      fields.workerCount.textContent = getH2ACount();
       fields.workerTotal.textContent = REQUIRED_WORKERS;
     }
 
@@ -270,14 +278,16 @@
         fields.retWorkElement.style.visibility = "hidden";
       }
     }
-        
 
     function addWorker() {
-    if (workers.length >= REQUIRED_WORKERS) {
-      fields.error.textContent =
-        `You already added ${REQUIRED_WORKERS} worker(s). Remove one before adding another.`;
-      return;
-    }
+    const selectedStatus = fields.status.value;
+
+      if (selectedStatus === "H-2A" && getH2ACount() >= REQUIRED_WORKERS) {
+        fields.error.textContent =
+          `You already added ${REQUIRED_WORKERS} H-2A worker(s). Remove one before adding another.`;
+        return;
+      }
+      
       const worker = {
         firstName: fields.firstName.value.trim(),
         midName: fields.midName.value.trim(),
@@ -375,11 +385,11 @@
         REQUIRED_WORKERS = getRequiredWorkerCount();
         updateWorkerCountDisplay();
 
-        const workerCount = workers.length;
+        const h2aCount = getH2ACount();
 
-        if (workerCount !== REQUIRED_WORKERS) {
+        if (h2aCount !== REQUIRED_WORKERS) {
           fields.error.textContent =
-            `You must add exactly ${REQUIRED_WORKERS} worker(s). You currently have ${workerCount}.`;
+            `You must add exactly ${REQUIRED_WORKERS} H-2A worker(s). You currently have ${h2aCount}.`;
 
           JFCustomWidget.sendSubmit({
             valid: false,
@@ -392,9 +402,11 @@
         JFCustomWidget.sendSubmit({
           valid: true,
           value: JSON.stringify({
-            expectedWorkerCount: REQUIRED_WORKERS,
-            actualWorkerCount: workerCount,
-            workers
+            expectedH2AWorkerCount: REQUIRED_WORKERS,
+            actualH2AWorkerCount: getH2ACount(),
+            h4DependentCount: getH4Count(),
+            totalPeopleCount: workers.length,
+            people: workers
           })
         });
       });
