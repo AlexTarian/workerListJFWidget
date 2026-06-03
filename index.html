@@ -274,7 +274,7 @@
       const selectedOption = fields.country.selectedOptions[0];
       const phoneCode = selectedOption?.dataset.phoneCode;
 
-      if (phoneCode && fields.phone.value.trim().length > 4) {
+      if (phoneCode && fields.phone.value.trim().length < 5) {
         fields.phone.value = phoneCode + " ";
       }
     });
