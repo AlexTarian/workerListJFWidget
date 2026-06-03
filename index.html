@@ -402,10 +402,13 @@
       }[char]));
     }
 
+    document.addEventListener("DOMContentLoaded", function () {
+      populateCountryDropdown();
+    });
+    
     JFCustomWidget.subscribe("ready", function () {
       REQUIRED_WORKERS = getRequiredWorkerCount();
       updateWorkerCountDisplay();
-      populateCountryDropdown();
 
       JFCustomWidget.subscribe("submit", function () {
         REQUIRED_WORKERS = getRequiredWorkerCount();
