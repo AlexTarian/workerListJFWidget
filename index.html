@@ -216,18 +216,6 @@
     const workers = [];
     let REQUIRED_WORKERS = 1;
 
-    function populateCountryDropdown() {
-      fields.country.innerHTML = `<option value="">Select country</option>`;
-
-      COUNTRIES.forEach(country => {
-        const option = document.createElement("option");
-        option.value = country.name;
-        option.textContent = country.name;
-        option.dataset.phoneCode = country.phoneCode;
-        fields.country.appendChild(option);
-      });
-    }
-
     function getRequiredWorkerCount() {
       const fieldId = JFCustomWidget.getWidgetSetting("workerCountFieldId");
 
@@ -266,6 +254,20 @@
       error: document.getElementById("error"),
       workerList: document.getElementById("workerList")
     };
+
+    function populateCountryDropdown() {
+      fields.country.innerHTML = `<option value="">Select country</option>`;
+
+      COUNTRIES.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country.name;
+        option.textContent = country.name;
+        option.dataset.phoneCode = country.phoneCode;
+        fields.country.appendChild(option);
+      });
+
+      COUNTRIES.sort((a, b) => a.name.localeCompare(b.name));
+    }
 
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
     fields.status.addEventListener("change", toggleWorker);
