@@ -176,12 +176,6 @@
         <label for="country">Country of Origin<span style="color:red;">*</span></label>
         <select id="country">
           <option value="">Select country</option>
-          <option value="Mexico">Mexico</option>
-          <option value="South Africa">South Africa</option>
-          <option value="Jamaica">Jamaica</option>
-          <option value="Guatemala">Guatemala</option>
-          <option value="Honduras">Honduras</option>
-          <option value="Other">Other</option>
         </select>
       </div>
  
@@ -222,6 +216,18 @@
     const workers = [];
     let REQUIRED_WORKERS = 1;
 
+    function populateCountryDropdown() {
+      fields.country.innerHTML = `<option value="">Select country</option>`;
+
+      COUNTRIES.forEach(country => {
+        const option = document.createElement("option");
+        option.value = country.name;
+        option.textContent = country.name;
+        option.dataset.phoneCode = country.phoneCode;
+        fields.country.appendChild(option);
+      });
+    }
+
     function getRequiredWorkerCount() {
       const fieldId = JFCustomWidget.getWidgetSetting("workerCountFieldId");
 
@@ -244,18 +250,6 @@
       }
     }
 
-    function populateCountryDropdown() {
-      fields.country.innerHTML = `<option value="">Select country</option>`;
-
-      COUNTRIES.forEach(country => {
-        const option = document.createElement("option");
-        option.value = country.name;
-        option.textContent = country.name;
-        option.dataset.phoneCode = country.phoneCode;
-        fields.country.appendChild(option);
-      });
-    }
-
     const fields = {
       firstName: document.getElementById("firstName"),
       midName: document.getElementById("midName"),
@@ -274,7 +268,7 @@
     };
 
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
-    document.getElementById("status").addEventListener("change", toggleWorker);
+    fields.status.addEventListener("change", toggleWorker);
     
     fields.country.addEventListener("change", function () {
       const selectedOption = fields.country.selectedOptions[0];
