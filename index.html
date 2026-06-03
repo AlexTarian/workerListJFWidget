@@ -105,17 +105,19 @@
     .worker-name {
       font-size: 20px;
       font-weight: 700;
+      color: #0047AB;
     }
 
     .worker-details {
       font-size: 13px;
-      color: #555;
+      color: gray;
       margin-top: 4px;
     }
 
     .delete-btn {
       font-size: 20px;
       padding: 6px 12px;
+      border-radius: 30px;
     }
 
     .error {
@@ -251,11 +253,21 @@
     };
 
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
+    document.getElementById("status").addEventListener("change", toggleWorker);
 
     function updateWorkerCountDisplay() {
       fields.workerCount.textContent = workers.length;
       fields.workerTotal.textContent = REQUIRED_WORKERS;
     }
+
+    function toggleWorker() {
+      if (fields.status.value == "H-2A") {
+        fields.returningWorker.style.visibility = "visible";
+      } else {
+        fields.returningWorker.style.visibility = "hidden";
+      }
+    }
+        
 
     function addWorker() {
     if (workers.length >= REQUIRED_WORKERS) {
@@ -267,7 +279,7 @@
         firstName: fields.firstName.value.trim(),
         midName: fields.midName.value.trim(),
         lastName: fields.lastName.value.trim(),
-        status: fields.status.value.trim(),
+        status: fields.status.value,
         country: fields.country.value,
         returningWorker: fields.returningWorker.checked,
         phone: fields.phone.value.trim(),
@@ -328,9 +340,8 @@
               ${escapeHtml(worker.firstName)} ${escapeHtml(worker.lastName)}
             </div>
             <div class="worker-details">
-              ${escapeHtml(worker.country)}
-              ${worker.returningWorker ? " • Returning Worker" : ""}
-              ${worker.estimatedArrival ? " • Arrival: " + escapeHtml(worker.estimatedArrival) : ""}
+              ${worker.country ? escapeHtml(worker.country) : ""}
+              ${worker.status ? " • " + escapeHtml(worker.phone) : ""}
               ${worker.phone ? " • " + escapeHtml(worker.phone) : ""}
               ${worker.email ? " • " + escapeHtml(worker.email) : ""}
             </div>
