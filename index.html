@@ -108,6 +108,12 @@
       color: #0047AB;
     }
 
+    .h4-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: gray;
+    }
+
     .worker-details {
       font-size: 13px;
       color: gray;
@@ -115,6 +121,7 @@
     }
 
     .delete-btn {
+      background: red;
       font-size: 20px;
       padding: 6px 12px;
       border-radius: 30px;
@@ -331,7 +338,7 @@
       fields.firstName.value = "";
       fields.midName.value = "";
       fields.lastName.value = "";
-      fields.status.value = "";
+      fields.status.value = "H-2A";
       fields.country.value = "";
       fields.returningWorker.checked = false;
       fields.phone.value = "";
@@ -349,17 +356,17 @@
 
         card.innerHTML = `
           <div>
-            <div class="worker-name">
+            <div class="${worker.status=="H-2A" ? "worker-name" : "h4-name"}">
               ${escapeHtml(worker.firstName)} ${escapeHtml(worker.lastName)}
             </div>
             <div class="worker-details">
               ${worker.country ? escapeHtml(worker.country) : ""}
-              ${worker.status ? " • " + escapeHtml(worker.phone) : ""}
+              ${worker.status ? " • " + escapeHtml(worker.status) : ""}
               ${worker.phone ? " • " + escapeHtml(worker.phone) : ""}
               ${worker.email ? " • " + escapeHtml(worker.email) : ""}
             </div>
           </div>
-          <button class="delete-btn" type="button" aria-label="Delete worker">🗑</button>
+          <button class="delete-btn" type="button" aria-label="Delete worker">✘</button>
         `;
 
         card.querySelector(".delete-btn").addEventListener("click", () => deleteWorker(index));
