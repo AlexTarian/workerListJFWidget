@@ -178,7 +178,7 @@
         </select>
       </div>
  
-      <label class="checkbox-row">
+      <label class="checkbox-row" id="retWorkerLabel">
       <input id="returningWorker" type="checkbox" />
         Returning Worker
       </label>
@@ -243,7 +243,7 @@
       status: document.getElementById("status"),
       country: document.getElementById("country"),
       returningWorker: document.getElementById("returningWorker"),
-      retWorkElement : document.getElementsByClassName("checkbox-row"),
+      retWorkElement : document.getElementById("retWorkerLabel"),
       phone: document.getElementById("phone"),
       email: document.getElementById("email"),
       arrivalDate: document.getElementById("arrivalDate"),
@@ -263,8 +263,10 @@
 
     function toggleWorker() {
       if (fields.status.value == "H-2A") {
+        fields.returningWorker.style.visibility = "visible";
         fields.retWorkElement.style.visibility = "visible";
       } else {
+        fields.returningWorker.style.visibility = "hidden";
         fields.retWorkElement.style.visibility = "hidden";
       }
     }
