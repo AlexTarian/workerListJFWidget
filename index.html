@@ -137,33 +137,50 @@
     <h2>Add Workers</h2>
 
     <div class="grid">
-      <div>
-        <label for="firstName">First Name</label>
-        <input id="firstName" type="text" />
-      </div>
+      <div class="small-row">
+        <div>
+          <label for="firstName">First Name<span style="color:red;">*</span></label>
+          <input id="firstName" type="text" />
+        </div>
 
-      <div>
-        <label for="lastName">Last Name</label>
-        <input id="lastName" type="text" />
-      </div>
+        <div>
+          <label for="midName">Middle Name</label>
+          <input id="midName" type="text" />
+        </div>
+        
+        <div>
+          <label for="lastName">Last Name*</label>
+          <input id="lastName" type="text" />
+        </div>
+      </div>  
 
-      <div>
-        <label for="country">Country of Origin</label>
-        <select id="country">
-          <option value="">Select country</option>
-          <option value="Mexico">Mexico</option>
-          <option value="South Africa">South Africa</option>
-          <option value="Jamaica">Jamaica</option>
-          <option value="Guatemala">Guatemala</option>
-          <option value="Honduras">Honduras</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
+      <div class="small-row">
+        <div>
+          <label for="status">Country of Origin</label>
+          <select id="status">
+            <option value="H-2A">H-2A</option>
+            <option value="H-4">H-4</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="country">Country of Origin</label>
+          <select id="country">
+            <option value="">Select country</option>
+            <option value="Mexico">Mexico</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Jamaica">Jamaica</option>
+            <option value="Guatemala">Guatemala</option>
+            <option value="Honduras">Honduras</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-      <label class="checkbox-row">
-        <input id="returningWorker" type="checkbox" />
-        Returning Worker
-      </label>
+        <label class="checkbox-row">
+          <input id="returningWorker" type="checkbox" />
+          Returning Worker
+        </label>
+      </div>
     </div>
 
     <div class="small-row">
@@ -181,9 +198,9 @@
         <label for="arrivalDate">Est. Arrival</label>
         <input id="arrivalDate" type="date" />
       </div>
-
-      <button id="addWorkerBtn" type="button">+ ADD</button>
     </div>
+
+    <button id="addWorkerBtn" type="button">+ ADD</button>
 
     <div id="error" class="error"></div>
 
@@ -219,6 +236,7 @@
     const fields = {
       firstName: document.getElementById("firstName"),
       lastName: document.getElementById("lastName"),
+      status: document.getElementById("status"),
       country: document.getElementById("country"),
       returningWorker: document.getElementById("returningWorker"),
       phone: document.getElementById("phone"),
