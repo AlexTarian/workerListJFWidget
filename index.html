@@ -474,16 +474,23 @@
       }[char]));
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      clearForm();
+    let initialized = false;
+
+    async function initializeWidget() {
+      if (initialized) return;
+      initialized = true;
+
       populateCountryDropdown();
-    });
-    
-    JFCustomWidget.subscribe("ready", async function () {
+      toggleWorker();
+
       REQUIRED_WORKERS = await getRequiredWorkerCount();
       updateWorkerCountDisplay();
 
       await setDefaultCountryFromField();
+    }
+
+    JFCustomWidget.subscribe("ready", async function () {
+      await initializeWidget();
 
       JFCustomWidget.subscribe("submit", async function () {
         REQUIRED_WORKERS = await getRequiredWorkerCount();
