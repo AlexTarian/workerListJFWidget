@@ -8,6 +8,14 @@
   <style>
     * { box-sizing: border-box; }
 
+    .action-row {
+      display: grid;
+      grid-template-columns: auto auto 1fr;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -64,7 +72,7 @@
 
     .small-row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
       margin-top: 12px;
       align-items: end;
@@ -135,7 +143,7 @@
       min-height: 18px;
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 420px) {
       .grid, .small-row {
         grid-template-columns: 1fr;
       }
@@ -203,14 +211,11 @@
       </div>
     </div>
 
-    <div class="small-row">
+    <div class="action-row">
       <button id="addWorkerBtn" type="button">+ ADD</button>
-      <div><span id="workerCount">0</span><span>/</span><span id="workerTotal">0</span><span> workers selected</span></div>
+      <div><span id="workerCount">0</span>/<span id="workerTotal">0</span> workers selected</div>
       <div id="error" class="error"></div>
     </div>
-
-    <div id="workerList" class="worker-list"></div>
-  </div>
 
   <script src="countries.js"></script>
   <script>
