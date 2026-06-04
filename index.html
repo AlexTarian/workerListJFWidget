@@ -153,7 +153,7 @@
 
 <body>
   <div class="widget">
-    <h2>Add Workers (v3)</h2>
+    <h2>Add Workers (v4)</h2>
 
     <div class="small-row">
       <div>
@@ -213,7 +213,7 @@
 
     <div class="action-row">
       <button id="addWorkerBtn" type="button">+ ADD</button>
-      <div><span id="workerCount">0</span>/<span id="workerTotal">0</span> workers selected</div>
+      <div id="workerCountLine" style="visibility:hidden;"><span id="workerCount">0</span>/<span id="workerTotal">0</span> workers selected</div>
       <div id="error" class="error"></div>
     </div>
 
@@ -258,38 +258,26 @@
         return "";
       }
 
-      for (let attempt = 0; attempt < 10; attempt++) {
-        const value = await new Promise((resolve) => {
-          try {
-            JFCustomWidget.getFieldsValueById([cleanFieldId], function (response) {
-              console.log(`Field value response attempt ${attempt}:`, response);
+      return await new Promise((resolve) => {
+        try {
+          JFCustomWidget.getFieldsValueById([cleanFieldId], function (response) {
+            console.log("Field value response:", response);
 
-              const data = Array.isArray(response?.data) ? response.data : [];
+            const data = Array.isArray(response?.data) ? response.data : [];
 
-              const match = data.find(item =>
-                String(item?.selector) === cleanFieldId ||
-                String(item?.selector) === `input_${cleanFieldId}` ||
-                String(item?.selector).includes(cleanFieldId)
-              );
+            const match = data.find(item =>
+              String(item?.selector) === cleanFieldId ||
+              String(item?.selector) === `input_${cleanFieldId}` ||
+              String(item?.selector).includes(cleanFieldId)
+            );
 
-              resolve(clean_(match?.value || data[0]?.value || ""));
-            });
-          } catch (err) {
-            console.warn("Could not read field by ID:", err);
-            resolve("");
-          }
-        });
-
-        if (value) return value;
-
-        await sleep_(250);
-      }
-
-      return "";
-    }
-
-    function sleep_(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+            resolve(clean_(match?.value || data[0]?.value || ""));
+          });
+        } catch (err) {
+          console.warn("Could not read field by ID:", err);
+          resolve("");
+        }
+      });
     }
 
     function clean_(value) {
@@ -371,8 +359,7 @@
           fields.country.appendChild(option);
         });
     }
-
-    document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
+    
     fields.status.addEventListener("change", toggleWorker);
     fields.country.addEventListener("change", async function () {
       maybePrefillPhoneCode();
@@ -381,6 +368,7 @@
 
     document.getElementById("addWorkerBtn").addEventListener("click", async function () {
       await refreshExternalValues();
+      document.getElementById("workerCountLine").style.visibility="visible";
       addWorker();
     });
 
@@ -389,7 +377,6 @@
       fields.midName,
       fields.lastName,
       fields.status,
-      fields.country,
       fields.phone,
       fields.email,
       fields.arrivalDate
