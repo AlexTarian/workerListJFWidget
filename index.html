@@ -317,6 +317,13 @@
       maybePrefillPhoneCode();
     }
 
+    function applyDefaultCountry() {
+      if (!defaultCountry) return;
+
+      fields.country.value = defaultCountry;
+      maybePrefillPhoneCode();
+    }
+
     const fields = {
       firstName: document.getElementById("firstName"),
       midName: document.getElementById("midName"),
@@ -436,8 +443,8 @@
       fields.phone.value = "";
       fields.email.value = "";
       fields.arrivalDate.value = "";
+      applyDefaultCountry();
       fields.firstName.focus();
-      setDefaultCountryFromField();
     }
 
     function renderWorkers() {
