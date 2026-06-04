@@ -153,7 +153,7 @@
 
 <body>
   <div class="widget">
-    <h2>Add Workers</h2>
+    <h2>Add Workers (v2)</h2>
 
     <div class="small-row">
       <div>
@@ -223,6 +223,7 @@
   <script>
     const workers = [];
     let REQUIRED_WORKERS = 1;
+    let defaultCountry = "";
 
     function getSetting_(name) {
       try {
@@ -311,6 +312,7 @@
         return;
       }
 
+      defaultCountry = match.name;
       fields.country.value = match.name;
       maybePrefillPhoneCode();
     }
