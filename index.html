@@ -217,26 +217,95 @@
     const workers = [];
     let REQUIRED_WORKERS = 1;
 
-    function getRequiredWorkerCount() {
-      const fieldId = JFCustomWidget.getWidgetSetting("workerCountFieldId");
-
-      if (!fieldId) return 1;
-
+    function getSetting_(name) {
       try {
-        const parentDoc = window.parent.document;
-
-        const input =
-          parentDoc.querySelector(`#input_${fieldId}`) ||
-          parentDoc.querySelector(`[name="q${fieldId}"]`) ||
-          parentDoc.querySelector(`[id*="${fieldId}"]`);
-
-        const value = input ? input.value : "";
-
-        return Number(value) || 1;
-      } catch (error) {
-        console.warn("Could not read parent Jotform field:", error);
-        return 1;
+        return clean_(JFCustomWidget.getWidgetSetting(name));
+      } catch (err) {
+        console.warn(`Could not read setting ${name}:`, err);
+        return "";
       }
+    }
+
+    async function getFieldValueById_(fieldId) {
+      const cleanFieldId = String(fieldId || "").replace(/\D/g, "");
+
+      if (!cleanFieldId || typeof JFCustomWidget.getFieldsValueById !== "function") {
+        console.warn("Missing fieldId or getFieldsValueById unavailable:", fieldId);
+        return "";
+      }
+
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const value = await new Promise((resolve) => {
+          try {
+            JFCustomWidget.getFieldsValueById([cleanFieldId], function (response) {
+              console.log(`Field value response attempt ${attempt}:`, response);
+
+              const data = Array.isArray(response?.data) ? response.data : [];
+
+              const match = data.find(item =>
+                String(item?.selector) === cleanFieldId ||
+                String(item?.selector) === `input_${cleanFieldId}` ||
+                String(item?.selector).includes(cleanFieldId)
+              );
+
+              resolve(clean_(match?.value || data[0]?.value || ""));
+            });
+          } catch (err) {
+            console.warn("Could not read field by ID:", err);
+            resolve("");
+          }
+        });
+
+        if (value) return value;
+
+        await sleep_(250);
+      }
+
+      return "";
+    }
+
+    function sleep_(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function clean_(value) {
+      return String(value || "").trim();
+    }
+
+    function maybePrefillPhoneCode() {
+      const selectedOption = fields.country.selectedOptions[0];
+      const phoneCode = selectedOption?.dataset.phoneCode;
+
+      if (phoneCode && fields.phone.value.trim().length < 5) {
+        fields.phone.value = phoneCode + " ";
+      }
+    }
+
+    async function getRequiredWorkerCount() {
+      const fieldId = getSetting_("workerCountFieldId");
+      const value = await getFieldValueById_(fieldId);
+
+      return Number(value) || 1;
+    }
+
+    async function setDefaultCountryFromField() {
+      const fieldId = getSetting_("defaultCountryFieldId");
+      const countryValue = await getFieldValueById_(fieldId);
+
+      if (!countryValue) return;
+
+      const match = COUNTRIES.find(country =>
+        country.name.toLowerCase() === countryValue.toLowerCase() ||
+        country.iso.toLowerCase() === countryValue.toLowerCase()
+      );
+
+      if (!match) {
+        console.warn("No matching country found for:", countryValue);
+        return;
+      }
+
+      fields.country.value = match.name;
+      maybePrefillPhoneCode();
     }
 
     const fields = {
@@ -259,28 +328,21 @@
     function populateCountryDropdown() {
       fields.country.innerHTML = `<option value="">Select country</option>`;
 
-      COUNTRIES.forEach(country => {
-        const option = document.createElement("option");
-        option.value = country.name;
-        option.textContent = country.name;
-        option.dataset.phoneCode = country.phoneCode;
-        fields.country.appendChild(option);
-      });
-
-      COUNTRIES.sort((a, b) => a.name.localeCompare(b.name));
+      COUNTRIES
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach(country => {
+          const option = document.createElement("option");
+          option.value = country.name;
+          option.textContent = country.name;
+          option.dataset.phoneCode = country.phoneCode;
+          fields.country.appendChild(option);
+        });
     }
 
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
     fields.status.addEventListener("change", toggleWorker);
-    
-    fields.country.addEventListener("change", function () {
-      const selectedOption = fields.country.selectedOptions[0];
-      const phoneCode = selectedOption?.dataset.phoneCode;
-
-      if (phoneCode && fields.phone.value.trim().length < 5) {
-        fields.phone.value = phoneCode + " ";
-      }
-    });
+    fields.country.addEventListener("change", maybePrefillPhoneCode);
 
     function getH2ACount() {
       return workers.filter(worker => worker.status === "H-2A").length;
@@ -410,13 +472,15 @@
       populateCountryDropdown();
     });
     
-    JFCustomWidget.subscribe("ready", function () {
-      REQUIRED_WORKERS = getRequiredWorkerCount();
+    JFCustomWidget.subscribe("ready", async function () {
+      REQUIRED_WORKERS = await getRequiredWorkerCount();
       updateWorkerCountDisplay();
 
-      JFCustomWidget.subscribe("submit", function () {
-        REQUIRED_WORKERS = getRequiredWorkerCount();
+      JFCustomWidget.subscribe("submit", async function () {
+        REQUIRED_WORKERS = await getRequiredWorkerCount();
         updateWorkerCountDisplay();
+
+        await setDefaultCountryFromField();
 
         const h2aCount = getH2ACount();
 
