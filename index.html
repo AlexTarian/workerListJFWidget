@@ -217,6 +217,8 @@
       <div id="error" class="error"></div>
     </div>
 
+    <div id="workerList" class="worker-list"></div>
+
   <script src="countries.js"></script>
   <script>
     const workers = [];
@@ -294,7 +296,7 @@
     }
 
     async function setDefaultCountryFromField() {
-      const fieldId = getSetting_("defaultCountryFieldId");
+      const fieldId = getSetting_("countryFieldId");
       const countryValue = await getFieldValueById_(fieldId);
 
       if (!countryValue) return;
