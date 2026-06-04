@@ -481,11 +481,11 @@
       REQUIRED_WORKERS = await getRequiredWorkerCount();
       updateWorkerCountDisplay();
 
+      await setDefaultCountryFromField();
+
       JFCustomWidget.subscribe("submit", async function () {
         REQUIRED_WORKERS = await getRequiredWorkerCount();
         updateWorkerCountDisplay();
-
-        await setDefaultCountryFromField();
 
         const h2aCount = getH2ACount();
 
