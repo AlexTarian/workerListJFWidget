@@ -153,7 +153,7 @@
 
 <body>
   <div class="widget">
-    <h2>Add Workers (v2)</h2>
+    <h2>Add Workers (v3)</h2>
 
     <div class="small-row">
       <div>
@@ -224,6 +224,22 @@
     const workers = [];
     let REQUIRED_WORKERS = 1;
     let defaultCountry = "";
+    let refreshInProgress = false;
+
+    async function refreshExternalValues() {
+      if (refreshInProgress) return;
+
+      refreshInProgress = true;
+
+      try {
+        REQUIRED_WORKERS = await getRequiredWorkerCount();
+        updateWorkerCountDisplay();
+
+        await setDefaultCountryFromField();
+      } finally {
+        refreshInProgress = false;
+      }
+    }
 
     function getSetting_(name) {
       try {
@@ -358,7 +374,29 @@
 
     document.getElementById("addWorkerBtn").addEventListener("click", addWorker);
     fields.status.addEventListener("change", toggleWorker);
-    fields.country.addEventListener("change", maybePrefillPhoneCode);
+    fields.country.addEventListener("change", async function () {
+      maybePrefillPhoneCode();
+      await refreshExternalValues();
+    });
+
+    document.getElementById("addWorkerBtn").addEventListener("click", async function () {
+      await refreshExternalValues();
+      addWorker();
+    });
+
+    [
+      fields.firstName,
+      fields.midName,
+      fields.lastName,
+      fields.status,
+      fields.country,
+      fields.phone,
+      fields.email,
+      fields.arrivalDate
+    ].forEach(field => {
+      field.addEventListener("focus", refreshExternalValues);
+      field.addEventListener("change", refreshExternalValues);
+    });
 
     function getH2ACount() {
       return workers.filter(worker => worker.status === "H-2A").length;
