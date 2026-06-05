@@ -238,11 +238,11 @@
 </div>
     
   <script src="countries.js"></script>
+  <script src="recruiters.js"></script>
   <script>
     const workers = [];
     let REQUIRED_WORKERS = 1;
     let selectedRecruiter = "";
-    let defaultCountry = "";
     let refreshInProgress = false;
 
     async function refreshExternalValues() {
@@ -253,8 +253,6 @@
       try {
         REQUIRED_WORKERS = await getRequiredWorkerCount();
         updateWorkerCountDisplay();
-
-        await setDefaultCountryFromField();
       } finally {
         refreshInProgress = false;
       }
@@ -331,33 +329,41 @@
       return Number(value) || 1;
     }
 
-    async function setDefaultCountryFromField() {
-      const fieldId = getSetting_("countryFieldId");
-      const countryValue = await getFieldValueById_(fieldId);
+    function getRecruitmentCost(country, status) {
+  if (status !== "H-2A") return 0;
 
-      if (!countryValue) return;
+  const recruiter = RECRUITERS[selectedRecruiter];
+  return Number(recruiter?.countries?.[country]?.rate || 0);
+}
 
-      const match = COUNTRIES.find(country =>
-        country.name.toLowerCase() === countryValue.toLowerCase() ||
-        country.iso.toLowerCase() === countryValue.toLowerCase()
-      );
+function calculateRecruitmentTotals() {
+  const h2aWorkers = workers.filter(w => w.status === "H-2A");
 
-      if (!match) {
-        console.warn("No matching country found for:", countryValue);
-        return;
-      }
+  const breakdown = {};
+  let totalCost = 0;
 
-      defaultCountry = match.name;
-      fields.country.value = match.name;
-      maybePrefillPhoneCode();
+  h2aWorkers.forEach(worker => {
+    const cost = getRecruitmentCost(worker.country, worker.status);
+    totalCost += cost;
+
+    if (!breakdown[worker.country]) {
+      breakdown[worker.country] = {
+        count: 0,
+        rate: cost,
+        subtotal: 0
+      };
     }
 
-    function applyDefaultCountry() {
-      if (!defaultCountry) return;
+    breakdown[worker.country].count++;
+    breakdown[worker.country].subtotal += cost;
+  });
 
-      fields.country.value = defaultCountry;
-      maybePrefillPhoneCode();
-    }
+  return {
+    totalWorkers: h2aWorkers.length,
+    totalCost,
+    breakdown
+  };
+}
 
     const fields = {
       recruiterSelect: document.getElementById("recruiterSelect"),
@@ -515,6 +521,12 @@
       }
     }
 
+    function afterWorkerListChanged() {
+      renderWorkers();
+      updateWorkerCountDisplay();
+      syncRecruitmentDataToJotform();
+    }
+
     function addWorker() {
     const selectedStatus = fields.status.value;
 
@@ -533,7 +545,8 @@
         returningWorker: fields.returningWorker.checked,
         phone: fields.phone.value.trim(),
         email: fields.email.value.trim(),
-        estimatedArrival: formatDate(fields.arrivalDate.value)
+        estimatedArrival: formatDate(fields.arrivalDate.value),
+        recruitmentCost: getRecruitmentCost(fields.country.value, fields.status.value),
       };
 
       if (
@@ -553,14 +566,12 @@
       fields.error.textContent = "";
 
       clearForm();
-      renderWorkers();
-      updateWorkerCountDisplay();
+      afterWorkerListChanged();
     }
 
     function deleteWorker(index) {
       workers.splice(index, 1);
-      renderWorkers();
-      updateWorkerCountDisplay();
+      afterWorkerListChanged();
     }
 
     function clearForm() {
@@ -575,7 +586,7 @@
       fields.phone.value = "";
       fields.email.value = "";
       fields.arrivalDate.value = "";
-      applyDefaultCountry();
+      populateCountryDropdownForRecruiter();
       fields.firstName.focus();
     }
 
@@ -622,13 +633,32 @@
       if (initialized) return;
       initialized = true;
 
-      populateCountryDropdown();
+      populateRecruiterDropdown();
       toggleWorker();
 
       REQUIRED_WORKERS = await getRequiredWorkerCount();
       updateWorkerCountDisplay();
+    }
 
-      await setDefaultCountryFromField();
+    function syncRecruitmentDataToJotform() {
+      const totals = calculateRecruitmentTotals();
+
+      const breakdownText = Object.entries(totals.breakdown)
+        .map(([country, item]) =>
+          `${country}: ${item.count} x $${item.rate} = $${item.subtotal}`
+        )
+        .join("\n");
+
+      try {
+        JFCustomWidget.setFieldsValueByLabel([
+          { label: "Selected Recruiter", value: selectedRecruiter },
+          { label: "Recruitment Worker Count", value: totals.totalWorkers },
+          { label: "Recruitment Total", value: totals.totalCost },
+          { label: "Recruitment Breakdown", value: breakdownText }
+        ]);
+      } catch (err) {
+        console.warn("Could not sync recruitment data to Jotform:", err);
+      }
     }
 
     function buildReadableSubmission() {
