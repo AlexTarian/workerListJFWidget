@@ -228,7 +228,7 @@
 
     <div class="action-row">
       <button id="addWorkerBtn" type="button">+ ADD</button>
-      <div id="workerCountLine" style="visibility:hidden;"><span id="workerCount">0</span>/<span id="workerTotal">0</span> workers selected</div>
+      <div id="workerCountLine" style="visibility:hidden;"><span id="workerCount">0</span>/<span id="workerTotal">0</span> workers. ($<span id="costTotal">0</span>)</div>
       <div id="error" class="error"></div>
     </div>
 
@@ -382,6 +382,7 @@ function calculateRecruitmentTotals() {
       arrivalDate: document.getElementById("arrivalDate"),
       workerCount: document.getElementById("workerCount"),
       workerTotal: document.getElementById("workerTotal"),
+      costTotal: document.getElementById("costTotal"),
       error: document.getElementById("error"),
       workerList: document.getElementById("workerList")
     };
@@ -463,6 +464,8 @@ function calculateRecruitmentTotals() {
         workers.length = 0;
         renderWorkers();
         updateWorkerCountDisplay();
+        updateCostDisplay();
+        syncRecruitmentDataToJotform();
       }
 
       selectedRecruiter = "";
@@ -509,6 +512,17 @@ function calculateRecruitmentTotals() {
       fields.workerTotal.textContent = REQUIRED_WORKERS;
     }
 
+    function updateCostDisplay() {
+      const totals = calculateRecruitmentTotals();
+
+      fields.costTotal.textContent = totals.totalCost.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      fields.costTotalLine.style.visibility = workers.length > 0 ? "visible" : "hidden";
+    }
+
     function toggleWorker() {
       if (fields.status.value == "H-2A") {
         fields.returningWorker.style.visibility = "visible";
@@ -522,6 +536,7 @@ function calculateRecruitmentTotals() {
     function afterWorkerListChanged() {
       renderWorkers();
       updateWorkerCountDisplay();
+      updateCostDisplay();
       syncRecruitmentDataToJotform();
     }
 
@@ -585,6 +600,8 @@ function calculateRecruitmentTotals() {
       fields.email.value = "";
       fields.arrivalDate.value = "";
       populateCountryDropdownForRecruiter();
+      updateCostDisplay();
+      syncRecruitmentDataToJotform();
       fields.firstName.focus();
     }
 
@@ -603,8 +620,8 @@ function calculateRecruitmentTotals() {
             <div class="worker-details">
               ${worker.country ? escapeHtml(worker.country) : ""}
               ${worker.status ? " • " + escapeHtml(worker.status) : ""}
-              ${worker.phone ? " • " + escapeHtml(worker.phone) : ""}
-              ${worker.email ? " • " + escapeHtml(worker.email) : ""}
+              ${worker.returningWorker ? " • R " : ""}
+              ${worker.recruitmentCost ? " • " + escapeHtml(worker.recruitmentCost) : ""}
             </div>
           </div>
           <button class="delete-btn" type="button" aria-label="Delete worker">✘</button>
