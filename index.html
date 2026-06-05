@@ -520,6 +520,8 @@ function calculateRecruitmentTotals() {
         maximumFractionDigits: 2
       });
 
+      document.getElementById("workerCountLine").style.visibility =
+        workers.length > 0 ? "visible" : "hidden";
     }
 
     function toggleWorker() {
