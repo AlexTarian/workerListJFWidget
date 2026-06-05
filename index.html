@@ -153,6 +153,23 @@
 
 <body>
   <div class="widget">
+    <div id="recruiterView">
+  <h2>Select Recruiter</h2>
+
+  <label for="recruiterSelect">Recruiter<span style="color:red;">*</span></label>
+  <select id="recruiterSelect">
+    <option value="">Select recruiter</option>
+  </select>
+
+  <div class="action-row">
+    <button id="continueBtn" type="button">Continue</button>
+    <div id="recruiterError" class="error"></div>
+  </div>
+</div>
+
+<div id="workerView" style="display:none;">
+  <button id="backBtn" type="button">← Back</button>
+  
     <h2>Worker List Form</h2>
 
     <div class="small-row">
@@ -218,11 +235,13 @@
     </div>
 
     <div id="workerList" class="worker-list"></div>
-
+</div>
+    
   <script src="countries.js"></script>
   <script>
     const workers = [];
     let REQUIRED_WORKERS = 1;
+    let selectedRecruiter = "";
     let defaultCountry = "";
     let refreshInProgress = false;
 
@@ -341,6 +360,12 @@
     }
 
     const fields = {
+      recruiterSelect: document.getElementById("recruiterSelect"),
+      continueBtn: document.getElementById("continueBtn"),
+      backBtn: document.getElementById("backBtn"),
+      recruiterView: document.getElementById("recruiterView"),
+      workerView: document.getElementById("workerView"),
+      recruiterError: document.getElementById("recruiterError"),
       firstName: document.getElementById("firstName"),
       midName: document.getElementById("midName"),
       lastName: document.getElementById("lastName"),
@@ -357,20 +382,90 @@
       workerList: document.getElementById("workerList")
     };
 
-    function populateCountryDropdown() {
-      fields.country.innerHTML = `<option value="">Select country</option>`;
+    function populateRecruiterDropdown() {
+      fields.recruiterSelect.innerHTML = `<option value="">Select recruiter</option>`;
 
-      COUNTRIES
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .forEach(country => {
+      Object.keys(RECRUITERS)
+        .sort()
+        .forEach(recruiterName => {
+          const recruiter = RECRUITERS[recruiterName];
+
+          if (!recruiter?.countries || Object.keys(recruiter.countries).length === 0) return;
+
+          const hasValidRate = Object.values(recruiter.countries)
+            .some(country => Number(country.rate) > 0);
+
+          if (!hasValidRate) return;
+
           const option = document.createElement("option");
-          option.value = country.name;
-          option.textContent = country.name;
-          option.dataset.phoneCode = country.phoneCode;
-          fields.country.appendChild(option);
+          option.value = recruiterName;
+          option.textContent = recruiterName;
+          fields.recruiterSelect.appendChild(option);
         });
     }
+
+    function populateCountryDropdownForRecruiter() {
+      fields.country.innerHTML = `<option value="">Select country</option>`;
+
+      const recruiter = RECRUITERS[selectedRecruiter];
+      if (!recruiter) return;
+
+      Object.keys(recruiter.countries)
+        .sort()
+        .forEach(countryName => {
+          const config = recruiter.countries[countryName];
+
+          if (!Number(config.rate)) return;
+
+          const countryInfo = COUNTRIES.find(c => c.name === countryName);
+
+          const option = document.createElement("option");
+          option.value = countryName;
+          option.textContent = `${countryName} - $${config.rate}`;
+          option.dataset.phoneCode = countryInfo?.phoneCode || "";
+          option.dataset.rate = config.rate;
+
+          fields.country.appendChild(option);
+        });
+
+      fields.country.value = recruiter.defaultCountry || "";
+      maybePrefillPhoneCode();
+    }
+
+    fields.continueBtn.addEventListener("click", function () {
+      selectedRecruiter = fields.recruiterSelect.value;
+
+      if (!selectedRecruiter) {
+        fields.recruiterError.textContent = "Please select a recruiter.";
+        return;
+      }
+
+      fields.recruiterError.textContent = "";
+
+      populateCountryDropdownForRecruiter();
+
+      fields.recruiterView.style.display = "none";
+      fields.workerView.style.display = "block";
+    });
+
+    fields.backBtn.addEventListener("click", function () {
+      if (workers.length > 0) {
+        const confirmed = confirm(
+          "Changing recruiters will remove all worker data. Start over?"
+        );
+
+        if (!confirmed) return;
+
+        workers.length = 0;
+        renderWorkers();
+        updateWorkerCountDisplay();
+      }
+
+      selectedRecruiter = "";
+      fields.recruiterSelect.value = "";
+      fields.workerView.style.display = "none";
+      fields.recruiterView.style.display = "block";
+    });
     
     fields.status.addEventListener("change", toggleWorker);
     fields.country.addEventListener("change", async function () {
