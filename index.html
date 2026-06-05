@@ -524,34 +524,20 @@
       await setDefaultCountryFromField();
     }
 
-    function buildCsvTable() {
-  const headers = [
-    "First",
-    "Middle",
-    "Last",
-    "Status",
-    "Country",
-    "Returning",
-    "Phone",
-    "Email",
-    "Est. Arrival"
-  ];
+    function buildReadableSubmission() {
+  const lines = [];
 
-  const rows = workers.map(p => [
-    p.firstName,
-    p.midName || "",
-    p.lastName,
-    p.status,
-    p.country,
-    p.returningWorker ? "Yes" : "No",
-    p.phone,
-    p.email,
-    p.estimatedArrival
-  ]);
+  workers.forEach((p, i) => {
+    const name = [p.firstName, p.midName, p.lastName].filter(Boolean).join(" ");
 
-  return [headers, ...rows]
-    .map(row => row.map(csvEscape).join(","))
-    .join("\n");
+    lines.push(`Worker ${i + 1}: ${name}`);
+    lines.push(`${p.status} • ${p.country} • Returning: ${p.returningWorker ? "Yes" : "No"}`);
+    lines.push(`${p.phone} • ${p.email}`);
+    lines.push(`Est. Arrival: ${p.estimatedArrival}`);
+    lines.push("");
+  });
+
+  return lines.join("\n");
 }
 
 function csvEscape(value) {
@@ -582,7 +568,7 @@ function csvEscape(value) {
 
         JFCustomWidget.sendSubmit({
           valid: true,
-          value: buildCsvTable(),
+          value: buildReadableSubmission(),
         });
       });
     });
