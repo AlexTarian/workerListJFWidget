@@ -228,7 +228,7 @@
 
     <div class="action-row">
       <button id="addWorkerBtn" type="button">+ ADD</button>
-      <div id="workerCountLine" style="visibility:hidden;"><span id="workerCount">0</span>/<span id="workerTotal">0</span> workers. ($<span id="costTotal">0</span>)</div>
+      <div id="workerCountLine" style="visibility:hidden;"><span id="workerCount">0</span>/<span id="workerTotal">0</span> workers ($<span id="costTotal">0</span>)</div>
       <div id="error" class="error"></div>
     </div>
 
@@ -520,7 +520,6 @@ function calculateRecruitmentTotals() {
         maximumFractionDigits: 2
       });
 
-      fields.costTotalLine.style.visibility = workers.length > 0 ? "visible" : "hidden";
     }
 
     function toggleWorker() {
@@ -621,7 +620,7 @@ function calculateRecruitmentTotals() {
               ${worker.country ? escapeHtml(worker.country) : ""}
               ${worker.status ? " • " + escapeHtml(worker.status) : ""}
               ${worker.returningWorker ? " • R " : ""}
-              ${worker.recruitmentCost ? " • " + escapeHtml(worker.recruitmentCost) : ""}
+              ${worker.status === "H-2A" ? " • Cost: $" + Number(worker.recruitmentCost || 0).toLocaleString("en-US") : ""}
             </div>
           </div>
           <button class="delete-btn" type="button" aria-label="Delete worker">✘</button>
