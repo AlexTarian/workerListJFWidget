@@ -524,40 +524,40 @@
       await setDefaultCountryFromField();
     }
 
-    function buildPeopleHtmlTable() {
-      const rows = workers.map(person => `
-        <tr>
-          <td>${escapeHtml(person.firstName)}</td>
-          <td>${escapeHtml(person.midName || "")}</td>
-          <td>${escapeHtml(person.lastName)}</td>
-          <td>${escapeHtml(person.status)}</td>
-          <td>${escapeHtml(person.country)}</td>
-          <td>${person.returningWorker ? "Yes" : "No"}</td>
-          <td>${escapeHtml(person.phone)}</td>
-          <td>${escapeHtml(person.email)}</td>
-          <td>${escapeHtml(person.estimatedArrival)}</td>
-        </tr>
-      `).join("");
+    function buildCsvTable() {
+  const headers = [
+    "First",
+    "Middle",
+    "Last",
+    "Status",
+    "Country",
+    "Returning",
+    "Phone",
+    "Email",
+    "Est. Arrival"
+  ];
 
-      return `
-        <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%;">
-          <thead>
-            <tr>
-              <th>First</th>
-              <th>Middle</th>
-              <th>Last</th>
-              <th>Status</th>
-              <th>Country</th>
-              <th>Returning</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Est. Arrival</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      `;
-    }
+  const rows = workers.map(p => [
+    p.firstName,
+    p.midName || "",
+    p.lastName,
+    p.status,
+    p.country,
+    p.returningWorker ? "Yes" : "No",
+    p.phone,
+    p.email,
+    p.estimatedArrival
+  ]);
+
+  return [headers, ...rows]
+    .map(row => row.map(csvEscape).join(","))
+    .join("\n");
+}
+
+function csvEscape(value) {
+  const text = String(value ?? "");
+  return `"${text.replace(/"/g, '""')}"`;
+}
 
     JFCustomWidget.subscribe("ready", async function () {
       await initializeWidget();
@@ -582,13 +582,7 @@
 
         JFCustomWidget.sendSubmit({
           valid: true,
-          value: buildPeopleHtmlTable() + `<hr><pre>${escapeHtml(JSON.stringify({
-            expectedH2AWorkerCount: REQUIRED_WORKERS,
-            actualH2AWorkerCount: getH2ACount(),
-            h4DependentCount: getH4Count(),
-            totalPeopleCount: workers.length,
-            people: workers
-          }, null, 2))}</pre>`
+          value: buildCsvTable(),
         });
       });
     });
