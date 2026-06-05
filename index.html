@@ -677,6 +677,10 @@ function calculateRecruitmentTotals() {
       return lines.join("\n");
     }
 
+    document.addEventListener("DOMContentLoaded", async function () {
+      await initializeWidget();
+    });
+
     JFCustomWidget.subscribe("ready", async function () {
       await initializeWidget();
 
