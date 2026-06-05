@@ -284,6 +284,18 @@
       return String(value || "").trim();
     }
 
+    function formatDate(dateString) {
+      if (!dateString) return "";
+
+      const date = new Date(dateString);
+
+      return date.toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric"
+      });
+    }
+
     function maybePrefillPhoneCode() {
       const selectedOption = fields.country.selectedOptions[0];
       const phoneCode = selectedOption?.dataset.phoneCode;
@@ -426,7 +438,7 @@
         returningWorker: fields.returningWorker.checked,
         phone: fields.phone.value.trim(),
         email: fields.email.value.trim(),
-        estimatedArrival: fields.arrivalDate.value
+        estimatedArrival: formatDate(fields.arrivalDate.value)
       };
 
       if (
@@ -525,25 +537,20 @@
     }
 
     function buildReadableSubmission() {
-  const lines = [];
+      const lines = [];
 
-  workers.forEach((p, i) => {
-    const name = [p.firstName, p.midName, p.lastName].filter(Boolean).join(" ");
+      workers.forEach((p, i) => {
+        const name = [p.firstName, p.midName, p.lastName].filter(Boolean).join(" ");
 
-    lines.push(`Worker ${i + 1}: ${name}`);
-    lines.push(`${p.status} • ${p.country} • Returning: ${p.returningWorker ? "Yes" : "No"}`);
-    lines.push(`${p.phone} • ${p.email}`);
-    lines.push(`Est. Arrival: ${p.estimatedArrival}`);
-    lines.push("");
-  });
+        lines.push(`Worker ${i + 1}: ${name}`);
+        lines.push(`${p.status} • ${p.country} • Returning: ${p.returningWorker ? "Yes" : "No"}`);
+        lines.push(`${p.phone} • ${p.email}`);
+        lines.push(`Est. Arrival: ${p.estimatedArrival}`);
+        lines.push("");
+      });
 
-  return lines.join("\n");
-}
-
-function csvEscape(value) {
-  const text = String(value ?? "");
-  return `"${text.replace(/"/g, '""')}"`;
-}
+      return lines.join("\n");
+    }
 
     JFCustomWidget.subscribe("ready", async function () {
       await initializeWidget();
