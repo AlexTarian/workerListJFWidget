@@ -171,21 +171,25 @@
   <button id="recruitmentBackBtn" type="button">← Back</button>
 
   <div class="small-row">
+    <label class="checkbox-row" id="recruitConsFeeLabel">
+    <input id="recruitConsFee" type="checkbox" checked />
+      Pay Consulate Fee
+    </label>
+  </div>  
+
+  <div class="small-row">
     <div>
       <label for="recruitCountry">Country<span style="color:red;">*</span></label>
       <select id="recruitCountry"></select>
     </div>
 
-    <label class="checkbox-row" id="recruitConsFeeLabel">
-    <input id="recruitConsFee" type="checkbox" checked />
-      Add Consulate Fee for Recruited Workers
-    </label>
-
     <div>
       <label for="recruitCount">Workers<span style="color:red;">*</span></label>
       <input id="recruitCount" type="number" min="1" />
     </div>
+  </div>  
 
+  <div class="small-row">  
     <button id="addRecruitmentBtn" type="button">+ ADD</button>
   </div>
 
