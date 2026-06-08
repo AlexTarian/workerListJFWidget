@@ -568,6 +568,24 @@
       }
     }
 
+    function getSelectedWorkerFeeDisplay() {
+      const rates = workers
+        .filter(worker => worker.status === "H-2A")
+        .map(worker => Number(worker.recruitmentCost || 0))
+        .filter(rate => rate > 0);
+
+      if (rates.length === 0) return "";
+
+      const minRate = Math.min(...rates);
+      const maxRate = Math.max(...rates);
+
+      if (minRate === maxRate) {
+        return `$${minRate.toLocaleString("en-US")}`;
+      }
+
+      return `$${minRate.toLocaleString("en-US")} - $${maxRate.toLocaleString("en-US")}`;
+    }
+
     function afterWorkerListChanged() {
       renderWorkers();
       updateWorkerCountDisplay();
@@ -695,6 +713,7 @@
 
     function syncRecruitmentDataToJotform() {
       const totals = calculateRecruitmentTotals();
+      const perWorker = getSelectedWorkerFeeDisplay();
 
       const breakdownText = Object.entries(totals.breakdown)
         .map(([country, item]) =>
@@ -706,9 +725,11 @@
         JFCustomWidget.setFieldsValueByLabel([
           { label: "Selected Recruiter", value: selectedRecruiter },
           { label: "Recruiter Email", value: selectedRecruiter.email },
-          { label: "Total Cost", value: totals.totalCost },
+          { label: "Base Consulate Fee", value: consFeeAmnt },
+          { label: "Per Worker Processing", value: perWorker },
           { label: "Processing Cost", value: totals.recCost },
           { label: "Consulate Fees", value: totals.consCost },
+          { label: "Total Cost", value: totals.totalCost },
         ]);
       } catch (err) {
         console.warn("Could not sync recruitment data to Jotform:", err);
