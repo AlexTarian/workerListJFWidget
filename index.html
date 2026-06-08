@@ -440,6 +440,31 @@
       maybePrefillPhoneCode();
     }
 
+    function setConsulateFeeFieldStatus() {
+      const recruiter = RECRUITERS[selectedRecruiter];
+      if (!recruiter) return;
+
+      if (recruiter.consulateFee == "always") {
+        fields.consFee.checked = true;
+        fields.consFee.style.visibility = "visible";
+        fields.consFeeElement.visibility = "visible";
+        fields.consFee.style.disabled = true;
+        fields.consFeeElement.disable = true;
+      } else if (recruiter.consulateFee == "optional") {
+        fields.consFee.checked = true;
+        fields.consFee.style.visibility = "visible";
+        fields.consFeeElement.visibility = "visible";
+        fields.consFee.style.disabled = false;
+        fields.consFeeElement.disable = false;
+      } else if (recruiter.consulateFee == "never") {
+        fields.consFee.checked = false;
+        fields.consFee.style.visibility = "hidden";
+        fields.consFeeElement.visibility = "hidden";
+        fields.consFee.style.disabled = true;
+        fields.consFeeElement.disable = true;
+      }
+    }
+
     fields.continueBtn.addEventListener("click", function () {
       selectedRecruiter = fields.recruiterSelect.value;
 
@@ -451,6 +476,7 @@
       fields.recruiterError.textContent = "";
 
       populateCountryDropdownForRecruiter();
+      setConsulateFeeFieldStatus();
 
       fields.recruiterView.style.display = "none";
       fields.workerView.style.display = "block";
