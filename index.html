@@ -339,6 +339,8 @@
       const h2aWorkers = workers.filter(w => w.status === "H-2A");
 
       const breakdown = {};
+      let recCost = 0;
+      let consCost = 0;
       let totalCost = 0;
 
       h2aWorkers.forEach(worker => {
