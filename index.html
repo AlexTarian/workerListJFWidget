@@ -177,17 +177,10 @@
       </div>
         
       <div>
-        <label for="midName">Middle Name</label>
-        <input id="midName" type="text" />
-      </div>
-        
-      <div>
         <label for="lastName">Last Name<span style="color:red;">*</span></label>
         <input id="lastName" type="text" />
       </div>
-    </div>
 
-    <div class="small-row">
       <div>
         <label for="status">Status<span style="color:red;">*</span></label>
         <select id="status">
@@ -195,7 +188,9 @@
           <option value="H-4">H-4</option>
         </select>
       </div>
-        
+    </div>
+
+    <div class="small-row">
       <div>
         <label for="country">Country of Origin<span style="color:red;">*</span></label>
         <select id="country">
@@ -206,6 +201,11 @@
       <label class="checkbox-row" id="retWorkerLabel">
       <input id="returningWorker" type="checkbox" />
         Returning Worker
+      </label>
+
+      <label class="checkbox-row" id="consFeeLabel">
+      <input id="consFee" type="checkbox" checked />
+        Add Consulate Fee
       </label>
     </div>
 
@@ -242,6 +242,7 @@
     let REQUIRED_WORKERS = 1;
     let selectedRecruiter = "";
     let refreshInProgress = false;
+    const consFeeAmnt = 205;
 
     async function refreshExternalValues() {
       if (refreshInProgress) return;
@@ -328,40 +329,41 @@
     }
 
     function getRecruitmentCost(country, status) {
-  if (status !== "H-2A") return 0;
+      if (status !== "H-2A") return 0;
 
-  const recruiter = RECRUITERS[selectedRecruiter];
-  return Number(recruiter?.countries?.[country]?.rate || 0);
-}
-
-function calculateRecruitmentTotals() {
-  const h2aWorkers = workers.filter(w => w.status === "H-2A");
-
-  const breakdown = {};
-  let totalCost = 0;
-
-  h2aWorkers.forEach(worker => {
-    const cost = getRecruitmentCost(worker.country, worker.status);
-    totalCost += cost;
-
-    if (!breakdown[worker.country]) {
-      breakdown[worker.country] = {
-        count: 0,
-        rate: cost,
-        subtotal: 0
-      };
+      const recruiter = RECRUITERS[selectedRecruiter];
+      return Number(recruiter?.countries?.[country]?.rate || 0);
     }
 
-    breakdown[worker.country].count++;
-    breakdown[worker.country].subtotal += cost;
-  });
+    function calculateRecruitmentTotals() {
+      const h2aWorkers = workers.filter(w => w.status === "H-2A");
 
-  return {
-    totalWorkers: h2aWorkers.length,
-    totalCost,
-    breakdown
-  };
-}
+      const breakdown = {};
+      let totalCost = 0;
+
+      h2aWorkers.forEach(worker => {
+        const cost = getRecruitmentCost(worker.country, worker.status);
+        const consFee = worker.consFee ? consFeeAmnt : 0;
+        totalCost += cost + consFee;
+
+        if (!breakdown[worker.country]) {
+          breakdown[worker.country] = {
+            count: 0,
+            rate: cost,
+            subtotal: 0
+          };
+        }
+
+        breakdown[worker.country].count++;
+        breakdown[worker.country].subtotal += cost + consFee;
+      });
+
+      return {
+        totalWorkers: h2aWorkers.length,
+        totalCost,
+        breakdown
+      };
+    }
 
     const fields = {
       recruiterSelect: document.getElementById("recruiterSelect"),
@@ -371,11 +373,11 @@ function calculateRecruitmentTotals() {
       workerView: document.getElementById("workerView"),
       recruiterError: document.getElementById("recruiterError"),
       firstName: document.getElementById("firstName"),
-      midName: document.getElementById("midName"),
       lastName: document.getElementById("lastName"),
       status: document.getElementById("status"),
       country: document.getElementById("country"),
       returningWorker: document.getElementById("returningWorker"),
+      consFee: document.getElementById("consFee"),
       retWorkElement : document.getElementById("retWorkerLabel"),
       phone: document.getElementById("phone"),
       email: document.getElementById("email"),
@@ -488,7 +490,6 @@ function calculateRecruitmentTotals() {
 
     [
       fields.firstName,
-      fields.midName,
       fields.lastName,
       fields.status,
       fields.phone,
@@ -552,7 +553,6 @@ function calculateRecruitmentTotals() {
       
       const worker = {
         firstName: fields.firstName.value.trim(),
-        midName: fields.midName.value.trim(),
         lastName: fields.lastName.value.trim(),
         status: fields.status.value,
         country: fields.country.value,
@@ -561,6 +561,9 @@ function calculateRecruitmentTotals() {
         email: fields.email.value.trim(),
         estimatedArrival: formatDate(fields.arrivalDate.value),
         recruitmentCost: getRecruitmentCost(fields.country.value, fields.status.value),
+        consFee: fields.consFee.checked,
+        totalWorkerCost: getRecruitmentCost(fields.country.value, fields.status.value) +
+          (fields.consFee.checked && fields.status.value === "H-2A" ? consFeeAmnt : 0),
       };
 
       if (
@@ -590,13 +593,13 @@ function calculateRecruitmentTotals() {
 
     function clearForm() {
       fields.firstName.value = "";
-      fields.midName.value = "";
       fields.lastName.value = "";
       fields.status.value = "H-2A";
       fields.country.value = "";
       fields.returningWorker.style.visibility = "visible";
       fields.retWorkElement.style.visibility = "visible";
       fields.returningWorker.checked = false;
+      fields.consFee.checked = true;
       fields.phone.value = "";
       fields.email.value = "";
       fields.arrivalDate.value = "";
@@ -622,7 +625,7 @@ function calculateRecruitmentTotals() {
               ${worker.country ? escapeHtml(worker.country) : ""}
               ${worker.status ? " • " + escapeHtml(worker.status) : ""}
               ${worker.returningWorker ? " • R " : ""}
-              ${worker.status === "H-2A" ? " • Cost: $" + Number(worker.recruitmentCost || 0).toLocaleString("en-US") : ""}
+              ${worker.status === "H-2A" ? ` • Cost: $${Number(worker.totalWorkerCost || 0).toLocaleString("en-US")}` : ""}
             </div>
           </div>
           <button class="delete-btn" type="button" aria-label="Delete worker">✘</button>
@@ -681,7 +684,7 @@ function calculateRecruitmentTotals() {
       const lines = [];
 
       workers.forEach((p, i) => {
-        const name = [p.firstName, p.midName, p.lastName].filter(Boolean).join(" ");
+        const name = [p.firstName, p.lastName].filter(Boolean).join(" ");
 
         lines.push(`${i + 1}: ${name}`);
         lines.push(`${p.status} • ${p.country} • Returning: ${p.returningWorker ? "Yes" : "No"}`);
