@@ -5,6 +5,7 @@ const RECRUITERS = {
   // ==========================
 
   "ANA Associates LLC - Ana DiTrolio": {
+    email: "ana@anaassociatesllc.com",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -13,6 +14,7 @@ const RECRUITERS = {
   },
 
   "Aztec Labor - Karen Schindler": {
+    email: "apiintake@azteclabor.com",
     consulateFee: "always",
     defaultCountry: "Mexico",
     countries: {
@@ -23,6 +25,7 @@ const RECRUITERS = {
   },
 
   "Coroneo Agencia De Viaje - Matilde Angelica Vargas": {
+    email: "mave55@prodigy.net.mx",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -31,6 +34,7 @@ const RECRUITERS = {
   },
 
   "Del-Al Associates Inc - Juan del Alamo": {
+    email: "juan_delal@hotmail.com",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -44,6 +48,7 @@ const RECRUITERS = {
 
   /*
   "Alejandro Cabrara - Jose Cabrera": {
+    email: "Joseusamex@gmail.com",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -52,6 +57,7 @@ const RECRUITERS = {
   },
 
   "Florida East Coast Travel Services Inc. - Jorge Garcia": {
+    email: "",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -60,6 +66,7 @@ const RECRUITERS = {
   },
 
   "H2 LaborMex, LLC - Daniela Reyes": {
+    email: "info@labormex.com",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -68,6 +75,7 @@ const RECRUITERS = {
   },
 
   "H2 Mexico LLC - Joshua Lyden": {
+    email: "lydenh2@gmail.com",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -76,6 +84,7 @@ const RECRUITERS = {
   },
 
   "Monarch Butterfly - Jose Jasso": {
+    email: "monarchbutterfly@hotmail.com",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -84,6 +93,7 @@ const RECRUITERS = {
   },
 
   "Solstice International - Melissa Villarreal-Rodriguez": {
+    email: "accounting@solstice-intl.com",
     consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
@@ -92,6 +102,7 @@ const RECRUITERS = {
   },
 
   "Galleria Travel SRL - Florin Ionescu": {
+    email: "boeruionescu@hotmail.com",
     consulateFee: "optional",
     defaultCountry: "Romania",
     countries: {
@@ -100,6 +111,7 @@ const RECRUITERS = {
   },
 
   "Abroad RSA - Carla Van Schalkwyk": {
+    email: "abroadrsa@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -108,6 +120,7 @@ const RECRUITERS = {
   },
 
   "Agri Employment Agency - Twanette Burger": {
+    email: "twanette.agriemployment@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -116,6 +129,7 @@ const RECRUITERS = {
   },
 
   "Agri USA & Canada - Gideon Jacobs": {
+    email: "gideon@agriusacanada.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -124,6 +138,7 @@ const RECRUITERS = {
   },
 
   "SAAP - William Radloff": {
+    email: "agriplacements.int@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -132,6 +147,7 @@ const RECRUITERS = {
   },
 
   "Agri USSA - Izak Nel": {
+    email: "agriussa@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -140,6 +156,7 @@ const RECRUITERS = {
   },
 
   "Country Labour Pty Ltd - Charmaine Bekker": {
+    email: "cl@countrylabour.co.za",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -148,6 +165,7 @@ const RECRUITERS = {
   },
 
   "Eagle Hour Farm Work - Jaco Visser": {
+    email: "eaglehourfarmwork@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -156,6 +174,7 @@ const RECRUITERS = {
   },
 
   "Euro Personnel Consultants - Charlotte Portwig": {
+    email: "charlotte@europersonnel.co.za",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -164,6 +183,7 @@ const RECRUITERS = {
   },
 
   "Exclusive Placements - Stephanus Botha": {
+    email: "exclusiveplacementsusa@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -172,6 +192,7 @@ const RECRUITERS = {
   },
 
   "Farm Recruit USA - Pieter Liebenberg": {
+    email: "info@farmrecruitusa.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -180,6 +201,7 @@ const RECRUITERS = {
   },
 
   "GetGoAgri - Franco Nel": {
+    email: "getgoagri@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -188,6 +210,7 @@ const RECRUITERS = {
   },
 
   "Global Farmwork - Ronelle Herbst-Theron": {
+    email: "farmworkamerica@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -196,6 +219,7 @@ const RECRUITERS = {
   },
 
   "Greenfields - Jacqualene Swart": {
+    email: "h2awork@yahoo.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -204,6 +228,7 @@ const RECRUITERS = {
   },
 
   "Homestead Recruiting - Joshua Smith": {
+    email: "info@homesteadrecruiting.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -212,6 +237,7 @@ const RECRUITERS = {
   },
 
   "JobLex - Dianne Hirst": {
+    email: "dianne@joblex.co.za",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -220,6 +246,7 @@ const RECRUITERS = {
   },
 
   "Labor H2A Recruitment - Juanita Schoeman": {
+    email: "laborh2a@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -228,6 +255,7 @@ const RECRUITERS = {
   },
 
   "Link2FarmingUSA Recruitment - Marlize Langenhoven": {
+    email: "link2farmingusa@yahoo.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -236,6 +264,7 @@ const RECRUITERS = {
   },
 
   "Midwest Placements - Anje De Bruin": {
+    email: "admin@mwplacements.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -244,6 +273,7 @@ const RECRUITERS = {
   },
 
   "Next Level H2A Recruiters - Hyla Grobler": {
+    email: "hyla@nextlevelh2arecruiters.co.za",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -252,6 +282,7 @@ const RECRUITERS = {
   },
 
   "NS Pinnacle Recruitment - Nicolette Goncalves": {
+    email: "manager@nspinnaclerecruit.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -260,6 +291,7 @@ const RECRUITERS = {
   },
 
   "Placement Service International - Lizette Theunisen": {
+    email: "info@psiplacements.co.za",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -268,6 +300,7 @@ const RECRUITERS = {
   },
 
   "SA 2 USA Recruit - Delucia Swanepoel": {
+    email: "apply@sa2usarecruit.co.za",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -276,6 +309,7 @@ const RECRUITERS = {
   },
 
   "USA Labour - Steven Schultz": {
+    email: "admin@usalabour.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -284,6 +318,7 @@ const RECRUITERS = {
   },
 
   "VPS Recruitment - Lihandri Elizabeth van den Berg": {
+    email: "vpofficesa@gmail.com",
     consulateFee: "optional",
     defaultCountry: "South Africa",
     countries: {
@@ -292,12 +327,14 @@ const RECRUITERS = {
   },
 
   "iWorkMarket - Irina Mealy": {
+    email: "Irina.Engel@iWorkMarket.com",
     consulateFee: "optional",
     defaultCountry: "",
     countries: {}
   },
 
   "Thunderbold Intl LLC - Ruben Wall": {
+    email: "rubenwall@me.com",
     consulateFee: "optional",
     defaultCountry: "",
     countries: {}
