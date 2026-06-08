@@ -344,6 +344,8 @@
       h2aWorkers.forEach(worker => {
         const cost = getRecruitmentCost(worker.country, worker.status);
         const consFee = worker.consFee ? consFeeAmnt : 0;
+        recCost += cost;
+        consCost += consFee;
         totalCost += cost + consFee;
 
         if (!breakdown[worker.country]) {
@@ -361,6 +363,8 @@
       return {
         totalWorkers: h2aWorkers.length,
         totalCost,
+        recCost,
+        consCost,
         breakdown
       };
     }
@@ -703,6 +707,8 @@
           { label: "Selected Recruiter", value: selectedRecruiter },
           { label: "Recruiter Email", value: selectedRecruiter.email },
           { label: "Total Cost", value: totals.totalCost },
+          { label: "Recruitment Cost", value: totals.recCost },
+          { label: "Consulate Fees", value: totals.consCost },
         ]);
       } catch (err) {
         console.warn("Could not sync recruitment data to Jotform:", err);
