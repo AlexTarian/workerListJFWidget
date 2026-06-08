@@ -702,15 +702,20 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
     }
 
     function updateCostDisplay() {
-      const totals = calculateRecruitmentTotals();
+      const identifiedTotals = calculateRecruitmentTotals();
+      const recruitedTotal = calculateRecruitmentRequestTotal();
 
-      fields.costTotal.textContent = totals.totalCost.toLocaleString("en-US", {
+      const grandTotal = identifiedTotals.totalCost + recruitedTotal;
+
+      fields.costTotal.textContent = grandTotal.toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
 
       document.getElementById("workerCountLine").style.visibility =
-        workers.length > 0 ? "visible" : "hidden";
+        (workers.length > 0 || recruitmentRequests.length > 0)
+          ? "visible"
+          : "hidden";
     }
 
     function toggleWorker() {
@@ -897,7 +902,7 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
         count,
         rate,
         consFee,
-        subtotal: count * rate
+        subtotal: count * (rate + consFee)
       });
 
       syncRecruitmentDataToJotform();
@@ -949,13 +954,12 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
       try {
         JFCustomWidget.setFieldsValueByLabel([
           { label: "Selected Recruiter", value: selectedRecruiter },
-          { label: "Recruiter Email", value: recruiter.email },
+          { label: "Recruiter Email", value: recruiter?.email || "" },
           { label: "Base Consulate Fee", value: consFeeAmnt },
           { label: "Per Worker Processing", value: perWorker },
           { label: "Processing Cost", value: totals.recCost },
           { label: "Consulate Fees", value: totals.consCost },
           { label: "Total Cost", value: totals.totalCost },
-          { label: "Selected Recruiter", value: selectedRecruiter },
           { label: "Recruitment Worker Count", value: identifiedTotals.totalWorkers + calculateRecruitmentRequestWorkerCount() },
           { label: "Recruitment Total", value: grandTotal },
           { label: "Recruitment Breakdown", value: breakdownText },
