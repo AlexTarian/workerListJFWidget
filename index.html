@@ -449,14 +449,17 @@
       if (setting === "always") {
         fields.consFee.checked = true;
         fields.consFee.disabled = true;
+        fields.consFee.style.visibility = "visible";
         fields.consFeeElement.style.visibility = "visible";
       } else if (setting === "optional") {
         fields.consFee.checked = true;
         fields.consFee.disabled = false;
+        fields.consFee.style.visibility = "visible";
         fields.consFeeElement.style.visibility = "visible";
       } else if (setting === "never") {
         fields.consFee.checked = false;
         fields.consFee.disabled = true;
+        fields.consFee.style.visibility = "hidden";
         fields.consFeeElement.style.visibility = "hidden";
       }
     }
