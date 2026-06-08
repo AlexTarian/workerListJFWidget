@@ -5,7 +5,7 @@ const RECRUITERS = {
   // ==========================
 
   "ANA Associates LLC - Ana DiTrolio": {
-    consulateFee: "never",
+    consulateFee: "optional",
     defaultCountry: "Mexico",
     countries: {
       "Mexico": { rate: 200 }
