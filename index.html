@@ -658,7 +658,7 @@
               ${worker.country ? escapeHtml(worker.country) : ""}
               ${worker.status ? " • " + escapeHtml(worker.status) : ""}
               ${worker.returningWorker ? " • R " : ""}
-              ${worker.status === "H-2A" ? ` • Cost: $${Number(worker.recruitmentCost || 0).toLocaleString("en-US")} ${worker.consFee ? " + $" + consFeeAmnt + " (consulate) : ""}` : ""}
+              ${worker.status === "H-2A" ? ` • Cost: $${Number(worker.recruitmentCost || 0).toLocaleString("en-US")} ${worker.consFee ? " + $" + consFeeAmnt + " (consulate)" : ""}` : ""}
             </div>
           </div>
           <button class="delete-btn" type="button" aria-label="Delete worker">✘</button>
