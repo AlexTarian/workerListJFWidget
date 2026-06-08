@@ -377,8 +377,9 @@
       status: document.getElementById("status"),
       country: document.getElementById("country"),
       returningWorker: document.getElementById("returningWorker"),
-      consFee: document.getElementById("consFee"),
       retWorkElement : document.getElementById("retWorkerLabel"),
+      consFee: document.getElementById("consFee"),
+      consFeeElement : document.getElementById("consFeeLabel"),
       phone: document.getElementById("phone"),
       email: document.getElementById("email"),
       arrivalDate: document.getElementById("arrivalDate"),
@@ -529,9 +530,13 @@
       if (fields.status.value == "H-2A") {
         fields.returningWorker.style.visibility = "visible";
         fields.retWorkElement.style.visibility = "visible";
+        fields.consFee.style.visibility = "visible";
+        fields.consFeeElement.style.visibility = "visible";
       } else {
         fields.returningWorker.style.visibility = "hidden";
         fields.retWorkElement.style.visibility = "hidden";
+        fields.consFee.style.visibility = "hidden";
+        fields.consFeeElement.style.visibility = "hidden";
       }
     }
 
@@ -598,6 +603,8 @@
       fields.country.value = "";
       fields.returningWorker.style.visibility = "visible";
       fields.retWorkElement.style.visibility = "visible";
+      fields.consFee.style.visibility = "visible";
+      fields.consFeeElement.style.visibility = "visible";
       fields.returningWorker.checked = false;
       fields.consFee.checked = true;
       fields.phone.value = "";
