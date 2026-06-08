@@ -168,7 +168,6 @@
   </div>
 
   <div id="recruitmentView" style="display:none;">
-  <h2>Workers to Recruit</h2>
   <button id="recruitmentBackBtn" type="button">← Back</button>
 
   <div class="small-row">
@@ -176,6 +175,11 @@
       <label for="recruitCountry">Country<span style="color:red;">*</span></label>
       <select id="recruitCountry"></select>
     </div>
+
+    <label class="checkbox-row" id="recruitConsFeeLabel">
+    <input id="recruitConsFee" type="checkbox" checked />
+      Add Consulate Fee for Recruited Workers
+    </label>
 
     <div>
       <label for="recruitCount">Workers<span style="color:red;">*</span></label>
@@ -265,6 +269,8 @@
   <script src="recruiters.js"></script>
   <script>
     const workers = [];
+    const recruitmentRequests = [];
+    let recruitConsulateFee = true;
     let REQUIRED_WORKERS = 1;
     let selectedRecruiter = "";
     let refreshInProgress = false;
@@ -406,6 +412,8 @@
       recruitCountry: document.getElementById("recruitCountry"),
       recruitCount: document.getElementById("recruitCount"),
       addRecruitmentBtn: document.getElementById("addRecruitmentBtn"),
+      recruitConsFee: document.getElementById("recruitConsFee"),
+      recruitConsFeeLabel: document.getElementById("recruitConsFeeLabel"),
       recruitmentError: document.getElementById("recruitmentError"),
       recruitmentSummary: document.getElementById("recruitmentSummary"),
       continueToWorkersBtn: document.getElementById("continueToWorkersBtn"),
@@ -525,6 +533,7 @@
     function addRecruitmentRequest() {
       const country = fields.recruitCountry.value;
       const count = Number(fields.recruitCount.value || 0);
+      const consFee = fields.recruitConsFee.checked ? consFeeAmnt : 0;
 
       if (!country || count <= 0) {
         fields.recruitmentError.textContent = "Select a country and enter a worker count.";
@@ -543,7 +552,8 @@
         country,
         count,
         rate,
-        subtotal: count * rate
+        consFee,
+        subtotal: count * (rate + consFee)
       });
 
       fields.recruitmentError.textContent = "";
@@ -621,6 +631,32 @@
       fields.workerView.style.display = "none";
       fields.recruiterView.style.display = "block";
     });
+
+    fields.addRecruitmentBtn.addEventListener("click", addRecruitmentRequest);
+
+fields.continueToWorkersBtn.addEventListener("click", async function () {
+  const expectedCount = await getWorkersToRecruitCount();
+  const actualCount = calculateRecruitmentRequestWorkerCount();
+
+  if (actualCount !== expectedCount) {
+    fields.recruitmentError.textContent =
+      `You must allocate exactly ${expectedCount} worker(s). You currently allocated ${actualCount}.`;
+    return;
+  }
+
+  fields.recruitmentError.textContent = "";
+  fields.recruitmentView.style.display = "none";
+  fields.workerView.style.display = "block";
+});
+
+fields.recruitmentBackBtn.addEventListener("click", function () {
+  recruitmentRequests.length = 0;
+  renderRecruitmentSummary();
+  syncRecruitmentDataToJotform();
+
+  fields.recruitmentView.style.display = "none";
+  fields.recruiterView.style.display = "block";
+});
     
     fields.status.addEventListener("change", toggleWorker);
     fields.country.addEventListener("change", async function () {
@@ -835,38 +871,38 @@
       return recruitmentRequests.reduce((sum, item) => sum + item.count, 0);
     }
 
+    async function autoHandleSingleCountryRecruitment() {
+      const count = await getWorkersToRecruitCount();
+
+      if (count <= 0) return;
+
+      const recruiter = RECRUITERS[selectedRecruiter];
+      const countryName = Object.keys(recruiter.countries)
+        .find(country => Number(recruiter.countries[country]?.rate || 0) > 0);
+
+      if (!countryName) return;
+
+      const rate = Number(recruiter.countries[countryName].rate);
+
+      recruitmentRequests.length = 0;
+      recruitmentRequests.push({
+        country: countryName,
+        count,
+        rate,
+        subtotal: count * rate
+      });
+
+      syncRecruitmentDataToJotform();
+    }
+
     function renderRecruitmentSummary() {
       if (recruitmentRequests.length === 0) {
         fields.recruitmentSummary.textContent = "";
         return;
       }
-
-      async function autoHandleSingleCountryRecruitment() {
-        const count = await getWorkersToRecruitCount();
-
-        if (count <= 0) return;
-
-        const recruiter = RECRUITERS[selectedRecruiter];
-        const countryName = Object.keys(recruiter.countries)
-          .find(country => Number(recruiter.countries[country]?.rate || 0) > 0);
-
-        if (!countryName) return;
-
-        const rate = Number(recruiter.countries[countryName].rate);
-
-        recruitmentRequests.length = 0;
-        recruitmentRequests.push({
-          country: countryName,
-          count,
-          rate,
-          subtotal: count * rate
-        });
-
-        syncRecruitmentDataToJotform();
-      }
       
       const lines = recruitmentRequests.map(item =>
-        `${item.country}: ${item.count} x $${item.rate} = $${item.subtotal}`
+        `${item.country}: ${item.count} x $${item.rate}${item.consFee ? ` + $${item.consFee} consulate` : ""} = $${item.subtotal}`
       );
 
       lines.push(`Total: $${calculateRecruitmentRequestTotal()}`);
@@ -920,32 +956,6 @@
       }
     }
     
-    function syncRecruitmentDataToJotform() {
-      const recruiter = RECRUITERS[selectedRecruiter];
-      const totals = calculateRecruitmentTotals();
-      const perWorker = getSelectedWorkerFeeDisplay();
-
-      const breakdownText = Object.entries(totals.breakdown)
-        .map(([country, item]) =>
-          `${country}: ${item.count} x $${item.rate} = $${item.subtotal}`
-        )
-        .join("\n");
-
-      try {
-        JFCustomWidget.setFieldsValueByLabel([
-          { label: "Selected Recruiter", value: selectedRecruiter },
-          { label: "Recruiter Email", value: recruiter.email },
-          { label: "Base Consulate Fee", value: consFeeAmnt },
-          { label: "Per Worker Processing", value: perWorker },
-          { label: "Processing Cost", value: totals.recCost },
-          { label: "Consulate Fees", value: totals.consCost },
-          { label: "Total Cost", value: totals.totalCost },
-        ]);
-      } catch (err) {
-        console.warn("Could not sync recruitment data to Jotform:", err);
-      }
-    }
-
     function buildReadableSubmission() {
       const lines = [];
 
