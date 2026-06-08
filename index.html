@@ -568,28 +568,30 @@
     }
 
     function setConsulateFeeFieldStatus() {
-      const recruiter = RECRUITERS[selectedRecruiter];
-      if (!recruiter) return;
-
-      const setting = recruiter.consulateFee || "optional";
-
-      if (setting === "always") {
-        fields.consFee.checked = true;
-        fields.consFee.disabled = true;
-        fields.consFee.style.visibility = "visible";
-        fields.consFeeElement.style.visibility = "visible";
-      } else if (setting === "never") {
-        fields.consFee.checked = false;
-        fields.consFee.disabled = true;
-        fields.consFee.style.visibility = "hidden";
-        fields.consFeeElement.style.visibility = "hidden";
-      } else {
-        fields.consFee.checked = true;
-        fields.consFee.disabled = false;
-        fields.consFee.style.visibility = "visible";
-        fields.consFeeElement.style.visibility = "visible";
-      }
+      applyConsulateFeeRule(fields.consFee, fields.consFeeElement);
+      applyConsulateFeeRule(fields.recruitConsFee, fields.recruitConsFeeLabel);
     }
+
+    function applyConsulateFeeRule(checkbox, label) {
+  const recruiter = RECRUITERS[selectedRecruiter];
+  if (!recruiter) return;
+
+  const setting = recruiter.consulateFee || "optional";
+
+  if (setting === "always") {
+    checkbox.checked = true;
+    checkbox.disabled = true;
+    label.style.visibility = "visible";
+  } else if (setting === "never") {
+    checkbox.checked = false;
+    checkbox.disabled = true;
+    label.style.visibility = "hidden";
+  } else {
+    checkbox.checked = true;
+    checkbox.disabled = false;
+    label.style.visibility = "visible";
+  }
+}
 
     fields.continueBtn.addEventListener("click", async function () {
       selectedRecruiter = fields.recruiterSelect.value;
@@ -877,6 +879,7 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
 
     async function autoHandleSingleCountryRecruitment() {
       const count = await getWorkersToRecruitCount();
+      const consFee = fields.recruitConsFee.checked ? consFeeAmnt : 0;
 
       if (count <= 0) return;
 
@@ -893,6 +896,7 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
         country: countryName,
         count,
         rate,
+        consFee,
         subtotal: count * rate
       });
 
@@ -930,7 +934,9 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
         .join("\n");
 
       const recruitmentBreakdownText = recruitmentRequests
-        .map(item => `${item.country}: ${item.count} x $${item.rate} = $${item.subtotal}`)
+        .map(item =>
+          `${item.country}: ${item.count} x $${item.rate}${item.consFee ? ` + $${item.consFee} consulate` : ""} = $${item.subtotal}`
+        )
         .join("\n");
 
       const breakdownText = [
