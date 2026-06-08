@@ -701,9 +701,8 @@
       try {
         JFCustomWidget.setFieldsValueByLabel([
           { label: "Selected Recruiter", value: selectedRecruiter },
-          { label: "Recruitment Worker Count", value: totals.totalWorkers },
-          { label: "Recruitment Total", value: totals.totalCost },
-          { label: "Recruitment Breakdown", value: breakdownText }
+          { label: "Recruiter Email", value: selectedRecruiter.email },
+          { label: "Total Cost", value: totals.totalCost },
         ]);
       } catch (err) {
         console.warn("Could not sync recruitment data to Jotform:", err);
