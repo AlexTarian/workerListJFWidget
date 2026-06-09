@@ -430,6 +430,33 @@
       };
     }
 
+    function calculateRecruitmentRequestProcessingCost() {
+      return recruitmentRequests.reduce((sum, item) =>
+        sum + Number(item.rate || 0) * Number(item.count || 0)
+      , 0);
+    }
+
+    function calculateRecruitmentRequestConsFees() {
+      return recruitmentRequests.reduce((sum, item) =>
+        sum + Number(item.consFee || 0) * Number(item.count || 0)
+      , 0);
+    }
+
+    function getRecruitmentFeeDisplay() {
+      const rates = recruitmentRequests
+        .map(item => Number(item.rate || 0))
+        .filter(rate => rate > 0);
+
+      if (!rates.length) return "";
+
+      const min = Math.min(...rates);
+      const max = Math.max(...rates);
+
+      return min === max
+        ? `$${min.toLocaleString("en-US")}`
+        : `$${min.toLocaleString("en-US")} - $${max.toLocaleString("en-US")}`;
+    }
+
     const fields = {
       recruiterSelect: document.getElementById("recruiterSelect"),
       continueBtn: document.getElementById("continueBtn"),
@@ -968,12 +995,16 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
 
     function syncRecruitmentDataToJotform() {
       const identifiedTotals = calculateRecruitmentTotals();
+      const recruitmentProcessingTotal = calculateRecruitmentRequestProcessingCost();
+      const namedProcessingTotal = identifiedTotals.recCost;
       const recruiter = RECRUITERS[selectedRecruiter];
       const totals = calculateRecruitmentTotals();
-      const perWorker = getSelectedWorkerFeeDisplay();
+      const perWorkerProc = getSelectedWorkerFeeDisplay();
+      const perWorkerRec = getRecruitmentFeeDisplay();
 
       const recruitWorkersTotal = calculateRecruitmentRequestTotal();
-      const grandTotal = identifiedTotals.totalCost + recruitWorkersTotal;
+      const totalConsFees = identifiedTotals.consCost + calculateRecruitmentRequestConsFees();
+      const grandTotal = namedProcessingTotal + recruitmentProcessingTotal + totalConsFees;
 
       const identifiedBreakdownText = Object.entries(identifiedTotals.breakdown)
         .map(([country, item]) =>
@@ -998,13 +1029,18 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
         JFCustomWidget.setFieldsValueByLabel([
           { label: "Selected Recruiter", value: selectedRecruiter },
           { label: "Recruiter Email", value: recruiter?.email || "" },
+          
           { label: "Base Consulate Fee", value: consFeeAmnt },
-          { label: "Total Consulate Fees", value: totals.consCost },
-          { label: "Per Worker Processing", value: perWorker },
-          { label: "Total Processing Cost", value: totals.recCost },
+          { label: "Total Consulate Fees", value: totalConsFees },
+          
+          { label: "Per Worker Processing", value: perWorkerProc },
+          { label: "Total Processing Cost", value: namedProcessingTotal },
+
+          { label: "Per Worker Recruitment", value: perWorkerRec }
+          { label: "Recruitment Total", value: recruitmentProcessingTotal },
+          
           { label: "Total Cost", value: grandTotal },
           { label: "Recruitment Breakdown", value: breakdownText },
-          { label: "Per Worker Fee", value: getSelectedWorkerFeeDisplay() }
         ]);
       } catch (err) {
         console.warn("Could not sync recruitment data to Jotform:", err);
