@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Add Workers Widget v2</title>
+  <title>Add Workers Widget</title>
   <script src="//js.jotform.com/JotFormCustomWidget.min.js"></script>
 
   <style>
@@ -1058,7 +1058,7 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
           { label: "Recruiter Email", value: recruiter?.email || "" },
           
           { label: "Base Consulate Fee", value: consFeeAmnt },
-          { label: "Total Consulate Fees", value: totalConsFees },
+          { label: "Total Consulate Fees", value: identifiedTotals.consCost },
           
           { label: "Per Worker Processing", value: perWorkerProc },
           { label: "Total Processing Cost", value: namedProcessingTotal },
