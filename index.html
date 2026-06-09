@@ -790,12 +790,21 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
       fields.unnamedWorkerTotal.textContent = REQUIRED_UNIDENTIFIED_WORKERS;
     }
 
+    // function updateCostDisplay() {
+    //   const identifiedTotals = calculateRecruitmentTotals();
+    //   const recruitedTotal = calculateRecruitmentRequestTotal();
+    //   const grandTotal = identifiedTotals.totalCost + recruitedTotal;
+
+    //   fields.costTotal.textContent = grandTotal.toLocaleString("en-US", {
+    //     minimumFractionDigits: 2,
+    //     maximumFractionDigits: 2
+    //   });
+    // }
+
     function updateCostDisplay() {
       const identifiedTotals = calculateRecruitmentTotals();
-      const recruitedTotal = calculateRecruitmentRequestTotal();
-      const grandTotal = identifiedTotals.totalCost + recruitedTotal;
 
-      fields.costTotal.textContent = grandTotal.toLocaleString("en-US", {
+      fields.costTotal.textContent = identifiedTotals.totalCost.toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
