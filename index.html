@@ -164,7 +164,7 @@
     </select>
 
     <div class="action-row">
-      <button id="continueBtn" type="button">Continue</button>
+      <button id="continueBtn" type="button">Continue →</button>
     </div>
   </div>
 
@@ -194,13 +194,14 @@
 
   <div class="small-row">  
     <button id="addRecruitmentBtn" type="button">+ Add</button>
-    <button id="resetRecruitmentBtn" type="button">x Reset</button>
+    <button id="resetRecruitmentBtn" type="button" style="color:red;">↺ Reset</button>
+    <button id="placeholderBtn" type="button" style="visibility:hidden;"></button>
   </div>
 
   <pre id="recruitmentSummary"></pre>
 
   <div class="action-row">
-    <button id="continueToWorkersBtn" type="button">Continue to Worker Info</button>
+    <button id="continueToWorkersBtn" type="button">Continue →</button>
   </div>
 </div> 
 
@@ -272,13 +273,15 @@
     <div id="workerList" class="worker-list"></div>
 </div>
 
-<div id="statusFooter" style="visibility:hidden;">
-  Unidentified: <span id="unnamedWorkerCount">0</span>/<span id="unnamedWorkerTotal">0</span> | 
-  Identified: <span id="workerCount">0</span>/<span id="workerTotal">0</span> | 
-  Cost: $<span id="costTotal">0</span>
+<div>
+  <div id="statusFooter" style="visibility:hidden;">
+    Unidentified: <span id="unnamedWorkerCount">0</span>/<span id="unnamedWorkerTotal">0</span> | 
+    Identified: <span id="workerCount">0</span>/<span id="workerTotal">0</span> | 
+    Cost: $<span id="costTotal">0</span>
+    </div>
+    <div id="globalError" class="error"></div> 
   </div>
-  <div id="globalError" class="error"></div> 
-</div>    
+</div>
     
   <script src="countries.js"></script>
   <script src="recruiters.js"></script>
