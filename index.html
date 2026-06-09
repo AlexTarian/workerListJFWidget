@@ -89,7 +89,21 @@
     }
 
     button:hover {
-      background: #5E72E4;
+      background: #2269CD;
+    }
+
+    button-red {
+      border: 0px solid #333;
+      border-radius: 10px;
+      padding: 8px 22px;
+      background: #D7263D;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button-red:hover {
+      background: #ff2d48;
     }
 
     .worker-list {
@@ -194,8 +208,9 @@
 
   <div class="small-row">  
     <button id="addRecruitmentBtn" type="button">+ Add</button>
-    <button id="resetRecruitmentBtn" type="button" style="background-color:red;">↺ Reset</button>
-    <button id="placeholderBtn" type="button" style="visibility:hidden;"></button>
+    <button id="resetRecruitmentBtn" type="button-red">↺ Reset</button>
+    <button id="placeholderBtn1" type="button" style="visibility:hidden;"></button>
+    <button id="placeholderBtn2" type="button" style="visibility:hidden;"></button>
   </div>
 
   <pre id="recruitmentSummary"></pre>
