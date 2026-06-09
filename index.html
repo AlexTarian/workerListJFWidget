@@ -1012,6 +1012,7 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
 
     function syncRecruitmentDataToJotform() {
       const identifiedTotals = calculateRecruitmentTotals();
+      const identifiedWorkerTotal = identifiedTotals.totalCost;
       const recruitmentProcessingTotal = calculateRecruitmentRequestProcessingCost();
       const namedProcessingTotal = identifiedTotals.recCost;
       const recruiter = RECRUITERS[selectedRecruiter];
@@ -1056,6 +1057,7 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
           { label: "Per Worker Recruitment", value: perWorkerRec },
           { label: "Total Recruitment Cost", value: recruitmentProcessingTotal },
           
+          { label: "Identified Worker Total", value: identifiedWorkerTotal },
           { label: "Total Cost", value: grandTotal },
           { label: "Recruitment Breakdown", value: breakdownText },
         ]);
