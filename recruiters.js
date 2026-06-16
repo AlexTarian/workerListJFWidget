@@ -15,7 +15,7 @@ const RECRUITERS = {
 
   "Aztec Labor - Karen Schindler": {
     email: "apiintake@azteclabor.com",
-    consulateFee: "optional",
+    consulateFee: "always",
     defaultCountry: "Mexico",
     countries: {
       "Mexico": { rate: 150 },
