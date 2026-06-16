@@ -1081,10 +1081,8 @@ fields.recruitmentBackBtn.addEventListener("click", function () {
       workers.forEach((p, i) => {
         const name = [p.firstName, p.lastName].filter(Boolean).join(" ");
 
-        lines.push(`${i + 1}: ${name}`);
-        lines.push(`${p.status} • ${p.country} • Returning: ${p.returningWorker ? "Yes" : "No"}`);
-        lines.push(`${p.phone} • ${p.email}`);
-        lines.push(`Est. Arrival: ${p.estimatedArrival}`);
+        lines.push(`${i + 1}: ${name} • ${p.status} • ${p.country} • Returning: ${p.returningWorker ? "Yes" : "No"}`);
+        lines.push(`${p.phone} • ${p.email} • Est. Arrival: ${p.estimatedArrival}`);
         lines.push("");
       });
 
